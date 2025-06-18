@@ -1206,6 +1206,12 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
   }
 
   public static void main(String[] args) throws Exception {
-    new WhisperServerService().run(args);
+    String baseDir = System.getProperty("user.dir");
+    System.out.println(baseDir);
+    String configPath = baseDir + "/service/config/sample.yml";
+    String secretsPath = baseDir + "/service/config/sample-secrets-bundle.yml";
+//    final String config = Resources.getResource(configPath).getPath();
+    System.setProperty("secrets.bundle.filename", secretsPath);
+    new WhisperServerService().run("server", configPath);
   }
 }

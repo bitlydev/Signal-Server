@@ -22,7 +22,7 @@ public class DynamicCaptchaConfiguration {
   @DecimalMin("0")
   @DecimalMax("1")
   @NotNull
-  private BigDecimal scoreFloor;
+  private BigDecimal scoreFloor = BigDecimal.ONE;
 
   @JsonProperty
   private boolean allowHCaptcha = false;
