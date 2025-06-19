@@ -5,6 +5,7 @@ import io.dropwizard.core.setup.Environment;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import org.whispersystems.textsecuregcm.configuration.secrets.SecretBytes;
@@ -24,9 +25,12 @@ public record RegistrationServiceConfiguration(@NotBlank String host,
   public RegistrationServiceClient build(final Environment environment, final Executor callbackExecutor,
       final ScheduledExecutorService identityRefreshExecutor) {
     try {
+      if (Objects.equals(credentialConfigurationJson, "unset")) {
+        return new RegistrationServiceClient(host, port, null, registrationCaCertificate, collationKeySalt.value(),
+            identityRefreshExecutor);
+      }
       final IdentityTokenCallCredentials callCredentials = IdentityTokenCallCredentials.fromCredentialConfig(
           credentialConfigurationJson, identityTokenAudience, identityRefreshExecutor);
-
       environment.lifecycle().manage(callCredentials);
 
       return new RegistrationServiceClient(host, port, callCredentials, registrationCaCertificate, collationKeySalt.value(),
